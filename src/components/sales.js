@@ -52,15 +52,19 @@ class AddSaleDetails extends Component {
             unitPrice: parseInt(this.state.unitPrice),
             date: this.state.date.getDate() + "/" + this.state.date.getMonth() + "/" + this.state.date.getFullYear()
         }
-        // console.log(newObj)
-
         let refRoot = FirebaseService.ref.child(`/products/${newObj.product.id}`).once('value', (snapshot) => {
-            let total = {
-                quantity: parseInt(snapshot.val().quantity) - newObj.quantity,
-                unitPrice: parseInt(snapshot.val().unitPrice) - newObj.unitPrice,
-                store: newObj.store
+            if (parseInt(snapshot.val().quantity) < newObj.quantity || parseInt(snapshot.val().unitPrice) < newObj.unitPrice) {
+                alert("Your Prodect quantity/Price is less then Your input")
+                return
             }
-            let refRoot = FirebaseService.ref.child(`/products/${newObj.product.id}`).update(total);
+            else {
+                let total = {
+                    quantity: parseInt(snapshot.val().quantity) - newObj.quantity,
+                    unitPrice: parseInt(snapshot.val().unitPrice) - newObj.unitPrice,
+                    store: newObj.store
+                }
+                let refRoot = FirebaseService.ref.child(`/products/${newObj.product.id}`).update(total);
+            }
         })
         let purchaseObject = {
             store: newObj.store,
