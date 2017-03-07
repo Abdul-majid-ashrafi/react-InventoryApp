@@ -2,8 +2,7 @@
 const InitalState = {
     storeData: [],
     viewPurchaseData: [],
-    viewSalesData: [],
-
+    viewSalesData: []
 };
 
 const MainReducer = (state = InitalState, action) => {

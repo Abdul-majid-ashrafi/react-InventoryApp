@@ -9,7 +9,10 @@ class AddProduct extends Component {
         super(props)
         this.state = {
             product: '',
-            dec: ''
+            dec: '',
+            unitPrice: 0,
+            quantity: 0,
+            userID: ''
         }
         this.inputHandler = this.inputHandler.bind(this)
         this.submit = this.submit.bind(this)
@@ -21,6 +24,8 @@ class AddProduct extends Component {
     }
     submit(e) {
         e.preventDefault()
+        this.state.userID = localStorage.getItem('currentUser')
+
         let refRoot = FirebaseService.ref.child('/products').push(this.state);
         refRoot.then(() => {
             alert("Succsessfully created")

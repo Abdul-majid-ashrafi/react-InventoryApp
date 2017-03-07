@@ -2,7 +2,7 @@
 const InitalState = {
     isLoggedin: false,
     user: {},
-    isRegistered: false,
+    isRegistered: false
 };
 
 const AuthReducer = (state = InitalState, action) => {

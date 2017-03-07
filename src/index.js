@@ -11,6 +11,7 @@ import AddPurchaseDetails from './components/purchase';
 import AddSaleDetails from './components/sales';
 import ViewStockDetails from './components/viewStock';
 import ViewSalesDetails from './components/viewSales';
+import StockData from './components/stock';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
@@ -28,6 +29,7 @@ ReactDOM.render((
                     <Route path="/sale" component={AddSaleDetails}></Route>
                     <Route path="/view_stock" component={ViewStockDetails}></Route>
                     <Route path="/view_sale" component={ViewSalesDetails}></Route>
+                    <Route path="/view_stocks" component={StockData}></Route>
                 </Route>
 
                 <Route path="/" component={App}>

@@ -7,7 +7,8 @@ class storeComponent extends Component {
         super(props)
         this.state = {
             store: '',
-            location: ''
+            location: '',
+            userID : ''
         }
         this.inputHandler = this.inputHandler.bind(this)
         this.submit = this.submit.bind(this)
@@ -18,6 +19,7 @@ class storeComponent extends Component {
         })
     }
     submit(e) {
+        this.state.userID = localStorage.getItem('currentUser')
         e.preventDefault()
         let refRoot = FirebaseService.ref.child('/stores').push(this.state);
         refRoot.then(() => {

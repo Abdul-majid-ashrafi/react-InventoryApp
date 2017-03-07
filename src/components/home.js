@@ -42,10 +42,13 @@ class Home extends Component {
                         <mat.RaisedButton label="Add Sale" type="button" primary={true} style={style} />
                     </Link>
                     <Link to="/view_stock">
-                        <mat.RaisedButton label="View Stock" type="button" primary={true} style={style} />
+                        <mat.RaisedButton label="Purchases" type="button" primary={true} style={style} />
                     </Link>
                     <Link to="/view_sale">
-                        <mat.RaisedButton label="View Sales" type="button" primary={true} style={style} />
+                        <mat.RaisedButton label="Sales" type="button" primary={true} style={style} />
+                    </Link>
+                    <Link to="/view_stocks">
+                        <mat.RaisedButton label="Stock" type="button" primary={true} style={style} />
                     </Link>
                     <mat.RaisedButton label="LogOut" onClick={this.logOut} type="button" primary={true} style={style} />
                 </mat.AppBar>

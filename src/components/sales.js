@@ -17,27 +17,23 @@ class AddSaleDetails extends Component {
         this.inputHandler = this.inputHandler.bind(this)
         this.dateHandler = this.dateHandler.bind(this)
         this.submit = this.submit.bind(this)
-
     }
-
     componentDidMount() {
         let storeArray = []
         FirebaseService.ref.child('/stores').on('child_added', (snapshot) => {
             storeArray.push(snapshot.val())
-            console.log(snapshot.val())
             this.props.createStore(storeArray)
             this.setState({ storeData: this.props.mainReducer.storeData })
         })
         let productArray = []
         FirebaseService.ref.child('/products').on('child_added', (snapshot) => {
-            productArray.push(snapshot.val())
+            productArray.push({ value: snapshot.val(), id: snapshot.key })
             this.props.createProduct(productArray)
             this.setState({ productData: this.props.mainReducer.productData })
         })
     }
 
     dateHandler(e, date) {
-        console.log(date)
         this.setState({
             date: date,
         })
@@ -48,23 +44,41 @@ class AddSaleDetails extends Component {
         })
     }
     submit(e) {
-
+        e.preventDefault()
         let newObj = {
             store: this.refs.store.value,
-            product: this.refs.product.value,
-            quantity: this.state.quantity,
-            unitPrice: this.state.unitPrice,
+            product: JSON.parse(this.refs.product.value),//this.refs.product.value,
+            quantity: parseInt(this.state.quantity),
+            unitPrice: parseInt(this.state.unitPrice),
             date: this.state.date.getDate() + "/" + this.state.date.getMonth() + "/" + this.state.date.getFullYear()
         }
+        // console.log(newObj)
 
-        e.preventDefault()
-        let refRoot = FirebaseService.ref.child('/sales').push(newObj);
-        refRoot.then(() => {
-            alert("Succsessfully created")
-            this.context.router.push({
-                pathname: '/home'
-            })
+        let refRoot = FirebaseService.ref.child(`/products/${newObj.product.id}`).once('value', (snapshot) => {
+            let total = {
+                quantity: parseInt(snapshot.val().quantity) - newObj.quantity,
+                unitPrice: parseInt(snapshot.val().unitPrice) - newObj.unitPrice,
+                store: newObj.store
+            }
+            let refRoot = FirebaseService.ref.child(`/products/${newObj.product.id}`).update(total);
         })
+        let purchaseObject = {
+            store: newObj.store,
+            product: newObj.product,
+            quantity: newObj.quantity,
+            unitPrice: newObj.unitPrice,
+            product: newObj.product.value.product,
+            dec: newObj.product.value.dec,
+            date: newObj.date
+        }
+
+        FirebaseService.ref.child('/sales').push(purchaseObject)
+            .then(() => {
+                alert("Succsessfully created")
+                this.context.router.push({
+                    pathname: '/home'
+                })
+            })
             .catch((error) => alert(error.message))
     }
     render() {
@@ -92,13 +106,9 @@ class AddSaleDetails extends Component {
                                 onChange={this.inputHandler}
                                 required
                             /><br />
-
-
                             <mat.DatePicker hintText="Sale Date"
                                 onChange={this.dateHandler}
                             />
-
-
                             <mat.TextField
                                 hintText="Unit Rs"
                                 name="unitPrice"
@@ -123,7 +133,7 @@ class AddSaleDetails extends Component {
                                 {
                                     this.state.productData.map((v, i) => {
                                         return (
-                                            <option value={v.product} key={i}> {v.product} </option>
+                                            <option value={JSON.stringify(v)} key={i}> {v.value.product} </option>
                                         )
                                     })}
                             </select>

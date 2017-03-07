@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import { FirebaseService } from '../helpers/firebaseService'
-import { ViewStock } from '../store/action/auth'
+import { CreateStore, CreateProduct } from '../store/action/auth'
 import { connect } from 'react-redux'
 import * as mat from 'material-ui';
 
-class ViewStockDetails extends Component {
+class StockData extends Component {
     constructor(props) {
         super(props)
-        this.state = { arr: [] }
+        this.state = {
+            productData: []
+        }
     }
     componentDidMount() {
-        let stockArray = []
-        FirebaseService.ref.child('/purchase').on('child_added', (snapshot) => {
-            stockArray.push(snapshot.val())
-            console.log(snapshot.val())
-            this.props.viewStore(stockArray)
-            this.setState({ arr: this.props.mainReducer.viewPurchaseData })
+        let productArray = []
+        FirebaseService.ref.child('/products').on('child_added', (snapshot) => {
+            productArray.push(snapshot.val())
+            this.props.createProduct(productArray)
+            this.setState({ productData: this.props.stockReducer.productData })
         })
     }
-
     render() {
         const center = {
             width: '50%',
@@ -49,7 +49,7 @@ class ViewStockDetails extends Component {
                             </mat.TableHeader>
                             <mat.TableBody displayRowCheckbox={false}>
                                 {
-                                    this.state.arr.map((v, i) => {
+                                    this.state.productData.map((v, i) => {
                                         return (
                                             <mat.TableRow key={i}>
                                                 <mat.TableRowColumn> {v.store}</mat.TableRowColumn>
@@ -68,16 +68,20 @@ class ViewStockDetails extends Component {
         );
     }
 }
+
 const mapStateToProps = (state) => { // mapStateToProps ye iska apna function he
     return {
-        mainReducer: state.MainReducer
+        stockReducer: state.MainReducer
     }
 }
 const mapDispatchToProps = (dispatch) => { // mapDispatchToProps ye iska apna function he
     return {
-        viewStore: (data) => {
-            dispatch(ViewStock(data))
+        createStore: (data) => {
+            dispatch(CreateStore(data))
+        },
+        createProduct: (data) => {
+            dispatch(CreateProduct(data))
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(ViewStockDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(StockData);
