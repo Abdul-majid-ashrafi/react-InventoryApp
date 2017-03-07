@@ -71,7 +71,6 @@ class AddSaleDetails extends Component {
             dec: newObj.product.value.dec,
             date: newObj.date
         }
-
         FirebaseService.ref.child('/sales').push(purchaseObject)
             .then(() => {
                 alert("Succsessfully created")
